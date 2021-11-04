@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.bugi.mapper.AdminMapper">
+
+	<resultMap type="MemberVO" id="memberMap">
+  		<id property="mNumber"       column="m_number"/>
+  		<result property="mNumber"   column="m_number"/>
+  		<result property="nickname"  column="nickname"/>
+  		<result property="username"  column="username"/>
+  		<result property="password"  column="password"/>
+  		<result property="gender"    column="gender"/>
+  		<result property="mAddress"  column="m_address"/>
+  		<result property="phone"     column="phone"/>
+  		<result property="point"     column="point"/>
+  		<result property="email"     column="email"/>
+  		<result property="reported"  column="reported"/>
+  		<result property="recvEmail" column="recv_email"/>
+  		<result property="recvTel"   column="recv_tel"/> 
+  		<association property="authVO" javaType="AuthVO">
+  			<result property="userNumber" column="user_number"/>
+  			<result property="auth"       column="auth"/>
+  		</association>
+  	</resultMap>
+	
+	<select id="getMembers" resultMap="memberMap">
+		<![CDATA[
+			SELECT				m.m_number, nickname, username, password, gender, m_address, phone, point, email, reported, recv_email, recv_tel, auth
+  			FROM				member m
+  			LEFT OUTER JOIN		member_auth auth
+  			ON					m.m_number = auth.user_number
+			ORDER BY	     	m_number
+			LIMIT				#{startRow}, #{amount}
+		]]>
+	</select>
+	
+	<resultMap type="MemberVO" id="reportedMap">
+  		<id property="mNumber"       column="m_number"/>
+  		<result property="mNumber"   column="m_number"/>
+  		<result property="nickname"  column="nickname"/>
+  		<result property="username"  column="username"/>
+  		<result property="password"  column="password"/>
+  		<result property="gender"    column="gender"/>
+  		<result property="mAddress"  column="m_address"/>
+  		<result property="phone"     column="phone"/>
+  		<result property="point"     column="point"/>
+  		<result property="email"     column="email"/>
+  		<result property="reported"  column="reported"/>
+  		<result property="recvEmail" column="recv_email"/>
+  		<result property="recvTel"   column="recv_tel"/> 
+  		<association property="authVO" javaType="AuthVO">
+  			<result property="userNumber" column="user_number"/>
+  			<result property="auth"       column="auth"/>
+  		</association>
+  	</resultMap>
+	
+	<select id="getReportedMembers" resultMap="reportedMap">
+		<![CDATA[
+			SELECT				m.m_number, nickname, username, password, gender, m_address, phone, point, email, reported, recv_email, recv_tel, auth
+  			FROM				member m
+  			LEFT OUTER JOIN		member_auth auth
+  			ON					m.m_number = auth.user_number
+			WHERE				reported > 0
+			ORDER BY	     	reported
+			LIMIT				#{startRow}, #{amount}
+		]]>
+	</select>
+	
+	<select id="getTotalMember" resultType="_int">
+		<![CDATA[
+			SELECT	COUNT(*)
+			FROM	member
+		]]>
+	</select>
+	
+	<select id="getTotalReported" resultType="_int">
+		<![CDATA[
+			SELECT	COUNT(*)
+			FROM	member
+			WHERE	reported > 0
+		]]>
+	</select>
+	
+</mapper>
